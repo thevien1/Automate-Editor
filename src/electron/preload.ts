@@ -1,0 +1,21 @@
+import { contextBridge, ipcRenderer } from 'electron';
+
+contextBridge.exposeInMainWorld('electronAPI', {
+  minimize: () => ipcRenderer.send('window-minimize'),
+  maximize: () => ipcRenderer.send('window-maximize'),
+  close: () => ipcRenderer.send('window-close'),
+  openFolderDialog: () => ipcRenderer.invoke('dialog:openFolder'),
+  openFileDialog: (options?: any) => ipcRenderer.invoke('dialog:openFile', options),
+  saveFileDialog: (options?: any) => ipcRenderer.invoke('dialog:saveFile', options),
+  saveProjectToDisk: (projectData: any) => ipcRenderer.invoke('fs:saveProject', projectData),
+  readProjectFromDisk: (folderPath: string) => ipcRenderer.invoke('fs:readProject', folderPath),
+  runWorkflow: (projectData: any) => ipcRenderer.invoke('automation:run', projectData),
+  launchBrowser: (options?: { port?: string | number; url?: string; profileName?: string; windowSize?: any; scale?: number; proxy?: string }) => ipcRenderer.invoke('automation:launchBrowser', options),
+  launchMultiThreads: (data: any) => ipcRenderer.invoke('automation:launchMultiThreads', data),
+  testPort: (port: string | number) => ipcRenderer.invoke('automation:testPort', port),
+  checkIp: (options?: { proxy?: string; timeoutMs?: number }) => ipcRenderer.invoke('automation:checkIp', options),
+  cdpAction: (data: { port: string | number; action: string; payload?: any }) => ipcRenderer.invoke('automation:cdpAction', data),
+  fileAction: (data: { action: string; payload?: any }) => ipcRenderer.invoke('fs:fileAction', data),
+  newWindow: () => ipcRenderer.invoke('app:newWindow'),
+});
+
